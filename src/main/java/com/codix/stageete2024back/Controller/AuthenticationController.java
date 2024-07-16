@@ -19,9 +19,7 @@ public class AuthenticationController {
     public ResponseEntity<?> signupClient(@RequestBody SignupRequestDTO signupRequestDTO){
         if (authService.presentByEmail(signupRequestDTO.getEmail())){
             return new ResponseEntity<>("Client alerady exist with this Email", HttpStatus.NOT_ACCEPTABLE);
-
         }
-
         UserDto createdUser = authService.signupClient(signupRequestDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.OK);
     }
@@ -30,10 +28,8 @@ public class AuthenticationController {
     public ResponseEntity<?> signupCompany(@RequestBody SignupRequestDTO signupRequestDTO){
         if (authService.presentByEmail(signupRequestDTO.getEmail())){
             return new ResponseEntity<>("Company alerady exist with this Email", HttpStatus.NOT_ACCEPTABLE);
-
         }
-
-        UserDto createdUser = authService.signupClient(signupRequestDTO);
+        UserDto createdUser = authService.signupCompany(signupRequestDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.OK);
     }
 }
