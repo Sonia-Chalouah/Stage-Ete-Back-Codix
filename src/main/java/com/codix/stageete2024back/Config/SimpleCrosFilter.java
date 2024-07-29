@@ -22,34 +22,21 @@ public class SimpleCrosFilter implements Filter {
     @Value("${app.client.url}")
     private String clientAppUrl;
 
-    public SimpleCrosFilter() {
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Do nothing here
-    }
-
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
-        String originHeader = request.getHeader("origin");
+        String originHeader = request.getHeader("Origin");
         response.setHeader("Access-Control-Allow-Origin", originHeader != null ? originHeader : clientAppUrl);
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             chain.doFilter(req, res);
         }
-    }
-
-    @Override
-    public void destroy() {
-        // Do nothing here
     }
 }
