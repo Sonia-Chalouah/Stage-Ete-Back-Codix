@@ -14,24 +14,27 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class SimpleCrosFilter implements Filter {
+public class SimpleCorsFilter implements Filter {
 
-    @Value("${app.client.url}")
-    private String clientAppUrl;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
-
-        String originHeader = request.getHeader("Origin");
-        response.setHeader("Access-Control-Allow-Origin", originHeader != null ? originHeader : clientAppUrl);
+        Map<String, String> map = new HashMap<>();
+        String originHeader = request.getHeader("origin");
+        response.setHeader("Access-Control-Allow-Origin", originHeader);
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Origin", "*"); // Pour autoriser toutes les origines, mais à éviter en production
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -39,4 +42,13 @@ public class SimpleCrosFilter implements Filter {
             chain.doFilter(req, res);
         }
     }
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+    }
+
+    @Override
+    public void destroy() {
+    }
+
 }

@@ -92,6 +92,6 @@ public class AuthenticationController {
         response.addHeader("Access-Control-Expose-Headers", "Authorization");
         response.addHeader("Access-Control-Allow-Headers", "Authorization" +
                 "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX+jwt);
+        response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
     }
 }
