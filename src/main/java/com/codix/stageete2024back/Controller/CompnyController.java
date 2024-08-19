@@ -19,12 +19,19 @@ public class CompnyController {
 
     @PostMapping("/ad/{userId}")
     public ResponseEntity<?> postAd(@PathVariable Long userId, @ModelAttribute AdDTO adDTO) throws IOException {
+        System.out.println("Received price: " + adDTO.getPrice());
         boolean success = companyService.postAd(userId, adDTO);
         if (success){
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+
+    @GetMapping("/ads/{userId}")
+    public ResponseEntity<?> getAllAdsByUserId(@PathVariable Long userId){
+        return ResponseEntity.ok(companyService.getAllAds(userId));
     }
 
 }
