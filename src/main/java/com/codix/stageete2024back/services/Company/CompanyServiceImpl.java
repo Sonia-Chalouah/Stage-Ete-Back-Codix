@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,5 +48,48 @@ public class CompanyServiceImpl  implements CompanyService{
                 })
                 .collect(Collectors.toList());
     }
+
+    public AdDTO getAdById(Long adId) {
+        Optional<Ad> optionalAd = adRepository.findById(adId);
+        if (optionalAd.isPresent()) {
+            AdDTO adDTO = optionalAd.get().getAdDTO();
+            if (adDTO.getImg() != null) {
+                adDTO.setRetrnedImg(Base64.getEncoder().encodeToString(optionalAd.get().getImg()).getBytes());
+            }
+            return adDTO;
+        }
+        return null;
+    }
+
+    public boolean updateAd(Long adId, AdDTO adDTO) throws IOException {
+        Optional<Ad> optionalAd = adRepository.findById(adId);
+        if (optionalAd.isPresent()){
+            Ad ad = optionalAd.get();
+
+            ad.setServiceName(adDTO.getServiceName());
+            ad.setDescription(adDTO.getDescription());
+            ad.setPrice(adDTO.getPrice());
+
+            if (adDTO.getImg() != null){
+                ad.setImg(adDTO.getImg().getBytes());
+            }
+
+            adRepository.save(ad);
+            return true;
+        }else {
+            return false ;
+        }
+    }
+
+    public boolean deleteAd(Long adId) {
+        System.out.println("Attempting to delete ad with ID: " + adId); // Ajout du log
+        Optional<Ad> optionalAd = adRepository.findById(adId);
+        if (optionalAd.isPresent()) {
+            adRepository.delete(optionalAd.get());
+            return true;
+        }
+        return false;
+    }
+
 
 }
