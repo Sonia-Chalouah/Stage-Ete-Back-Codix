@@ -14,6 +14,7 @@ public class AdDTO {
     private  Double price;
     private MultipartFile img;
     private byte[] retrnedImg;
+    private String mimeType;
     private  long userId;
     private String companyName;
 }
