@@ -4,6 +4,7 @@ import com.codix.stageete2024back.DTO.AdDTO;
 import com.codix.stageete2024back.DTO.ReservationDTO;
 import com.codix.stageete2024back.Entity.Ad;
 import com.codix.stageete2024back.Entity.Reservation;
+import com.codix.stageete2024back.Entity.ReservationStatus;
 import com.codix.stageete2024back.Entity.User;
 import com.codix.stageete2024back.Repository.AdRepository;
 import com.codix.stageete2024back.Repository.ReservationRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -100,6 +102,22 @@ public class CompanyServiceImpl  implements CompanyService{
     public List<ReservationDTO> getAllAdBookings(Long companyId){
         return reservationRepository.findAllByCompanyId(companyId)
                 .stream().map(Reservation::getReservationDto).collect(Collectors.toList());
+    }
+
+    public boolean changeBookingStatus(Long bookingId, String status){
+        Optional<Reservation> optionalReservation = reservationRepository.findById(bookingId);
+        if (optionalReservation.isPresent()){
+            Reservation existingReservation = optionalReservation.get();
+            if (Objects.equals(status, "Approve")){
+                existingReservation.setReservationStatus(ReservationStatus.APPROVED);
+            }else {
+                existingReservation.setReservationStatus(ReservationStatus.REJECTED);
+            }
+
+            reservationRepository.save(existingReservation);
+            return true;
+        }
+        return false;
     }
 
 

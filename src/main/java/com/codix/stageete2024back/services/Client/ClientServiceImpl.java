@@ -3,13 +3,16 @@ package com.codix.stageete2024back.services.Client;
 import com.codix.stageete2024back.DTO.AdDTO;
 import com.codix.stageete2024back.DTO.AdDetailsForClientDTO;
 import com.codix.stageete2024back.DTO.ReservationDTO;
+import com.codix.stageete2024back.DTO.ReviewDTO;
 import com.codix.stageete2024back.Entity.*;
 import com.codix.stageete2024back.Repository.AdRepository;
 import com.codix.stageete2024back.Repository.ReservationRepository;
+import com.codix.stageete2024back.Repository.ReviewRepository;
 import com.codix.stageete2024back.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +27,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     public List<AdDTO> getAllAds(){
         return adRepository.findAll().stream().map(Ad::getAdDTO).collect(Collectors.toList());
@@ -62,5 +68,36 @@ public class ClientServiceImpl implements ClientService {
             adDetailsForClientDTO.setAdDTO(optionalAd.get().getAdDTO());
         }
         return adDetailsForClientDTO;
+    }
+
+    public List<ReservationDTO> getAllBookingsByUserId(Long userId){
+        return reservationRepository.findAllByUserId(userId).stream().map(Reservation::getReservationDto).collect(Collectors.toList());
+    }
+
+    public Boolean giveReview(ReviewDTO reviewDTO){
+        Optional<User> optionalUser = userRepository.findById(reviewDTO.getUserId());
+        Optional<Reservation> optionalBooking = reservationRepository.findById(reviewDTO.getBookId());
+
+        if (optionalUser.isPresent() && optionalBooking.isPresent()){
+            Review review = new Review();
+
+            review.setReviewDate(new Date());
+            review.setReview(reviewDTO.getReview());
+            review.setRating(review.getRating());
+
+            review.setUser(optionalUser.get());
+            review.setAd(optionalBooking.get().getAd());
+
+            reviewRepository.save(review);
+
+            Reservation booking = optionalBooking.get();
+            booking.setReviewStatus(ReviewStatus.TRUE);
+
+            reservationRepository.save(booking);
+
+            return  true;
+        }
+
+        return false;
     }
 }
