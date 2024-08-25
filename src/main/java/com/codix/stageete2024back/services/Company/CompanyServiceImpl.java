@@ -1,9 +1,12 @@
 package com.codix.stageete2024back.services.Company;
 
 import com.codix.stageete2024back.DTO.AdDTO;
+import com.codix.stageete2024back.DTO.ReservationDTO;
 import com.codix.stageete2024back.Entity.Ad;
+import com.codix.stageete2024back.Entity.Reservation;
 import com.codix.stageete2024back.Entity.User;
 import com.codix.stageete2024back.Repository.AdRepository;
+import com.codix.stageete2024back.Repository.ReservationRepository;
 import com.codix.stageete2024back.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class CompanyServiceImpl  implements CompanyService{
 
     @Autowired
     private AdRepository adRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     public boolean postAd(Long userId, AdDTO adDTO) throws IOException {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -89,6 +95,11 @@ public class CompanyServiceImpl  implements CompanyService{
             return true;
         }
         return false;
+    }
+
+    public List<ReservationDTO> getAllAdBookings(Long companyId){
+        return reservationRepository.findAllByCompanyId(companyId)
+                .stream().map(Reservation::getReservationDto).collect(Collectors.toList());
     }
 
 
