@@ -11,16 +11,13 @@ import java.util.Date;
 @Data
 public class Review {
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private Date reviewDate;
 
     private String review;
-
-    private Long rating;
-
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -31,5 +28,4 @@ public class Review {
     @JoinColumn(name = "ad_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Ad ad;
-
 }

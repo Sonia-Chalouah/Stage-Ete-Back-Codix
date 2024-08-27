@@ -20,4 +20,6 @@ public interface ClientService {
     List<ReservationDTO> getAllBookingsByUserId(Long userId);
 
     Boolean giveReview(ReviewDTO reviewDTO);
+
+
 }
